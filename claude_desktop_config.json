@@ -1,0 +1,13 @@
+{
+    "mcpServers": {
+        "pethouse": {
+            "command": "/home/educorreia/Documents/UFMG/9Periodo/ManutEvolSftw/tp-final-mcp-pethouse/project-mcp-pet-adoption/.venv/bin/python",
+            "args": [
+                "/home/educorreia/Documents/UFMG/9Periodo/ManutEvolSftw/tp-final-mcp-pethouse/project-mcp-pet-adoption/pethouse_mcp_server.py"
+            ],
+            "env": {
+                "PETHOUSE_API_URL": "http://localhost:3000"
+            }
+        }
+    }
+}
