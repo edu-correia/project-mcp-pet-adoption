@@ -1,3 +1,4 @@
+import datetime
 import os
 from typing import Any, Dict, List, Optional
 import httpx
@@ -176,6 +177,7 @@ async def cadastrar_pet_para_adocao(
       "age": age,
       "ownerId": owner_id,
       "photoUrl": photo_url,
+      "createdAt": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
   }
   # Remove campos nulos para não enviar dados desnecessários
   payload = {k: v for k, v in payload.items() if v is not None}
