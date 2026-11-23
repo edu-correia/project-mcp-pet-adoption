@@ -272,7 +272,7 @@ criar_denuncia              → 500 TokenError</code></pre><small>O adaptador é
         <div class="card" style="margin:0"><span class="tag bad">E o que é público funciona em nome de quem o modelo quiser</span><pre style="margin:0"><code>cadastrar_pet_para_adocao(..., owner_id=1)
 criar_denuncia(reporter_user_id, ...)</code></pre><small>O anúncio criado no teste apareceu no sistema como se fosse do usuário 1, sem nenhum login. A autorização do produto (quem é dono, quem pode apagar) vive da identidade — e aqui a identidade é texto.</small></div>
       </div>
-      <p><small>Além do erro funcional, há um problema de diagnóstico: o modelo recebe stack trace e improvisa uma explicação (“o sistema está fora do ar”) — o defeito de autorização vira afirmação errada na conversa. Direção da correção: identidade vem de contexto autenticado (token do usuário ou credencial de serviço com escopo), nunca de parâmetro de tool.</small></p>
+      <p><small>Além do erro funcional, há um problema de diagnóstico: o modelo recebe stack trace e improvisa uma explicação (“o sistema está fora do ar”) — o defeito de autorização vira afirmação errada na conversa. Direção da correção: identidade vem de contexto autenticado (token do usuário ou credencial de serviço com escopo), nunca de parâmetro de tool. <br>Detalhe que a banca pode cobrar: <strong>a API autentica</strong> — testamos login e chamada protegida e recebe de volta 200 com os dados. O que ela não faz é aceitar <code>Authorization: Bearer</code>: o middleware lê só o cookie <code>jwt</code>. Então o cliente MCP teria de manter sessão por cookie, e não apenas mandar um header.</small></p>
     </section>
 
     <section class="slide" data-title="Segurança 1: o que cabe ao agente">
