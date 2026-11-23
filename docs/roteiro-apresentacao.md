@@ -8,7 +8,7 @@ O roteiro está escrito para ser falado (não lido): decore a primeira e a últi
 | Quem | Slides | Tempo | Papel |
 |---|---|---|---|
 | **P1** | 1 a 4 | ~3 min | abre, situa o produto e mostra o inventário (o problema) |
-| **P2** | 5 a 8 | ~4 min | como verificamos, o que a solução deveria entregar e **a demo em vídeo** |
+| **P2** | 5 a 8 | ~4 min | como verificamos, o que a solução deveria entregar e **a demo em vídeo (58 s)** |
 | **P3** | 9 a 12 | ~3 min | os insucessos técnicos: contrato, falha silenciosa, identidade, segurança |
 | **P4** | 13 a 16 | ~3 min | segurança no contexto do modelo, manutenção, roadmap e fechamento |
 
@@ -72,11 +72,11 @@ O problema é o preço: para responder ‘tem pug?’ ele joga a base inteira no
 
 ---
 
-**Slide 8 · Demo em vídeo (1min30)**
-*Antes de dar play (15 s):* “Vou mostrar isso acontecendo. Olhem três coisas no vídeo: qual ferramenta o agente escolhe, o que ela devolveu e o que entrou no contexto dele.”
-*Durante:* deixe o vídeo rodar sem falar por cima — 1min30 é curto e a atenção tem que ir para a tela. Se a sala for grande, narre as frases que estão no roteiro do vídeo (`DEMO_VIDEO.md`, seção 3).
-*Depois (15 s):* “Três coisas para levar daqui. Um: o agente está plugado no nosso servidor. Dois: ele acertou o pug **sem usar a ferramenta de busca** — baixou a base inteira e filtrou sozinho. Três: ele publicou um anúncio sem ninguém estar logado; o anúncio entrou no sistema como do usuário 1.
-O agente não é o vilão: ele usou o que estava exposto. O defeito é do adaptador, e é o que vem agora.” *(passa para P3)*
+**Slide 8 · Demo em vídeo (58 s, mudo)**
+*Antes de dar play (15 s):* “Vou mostrar isso acontecendo, no Claude Desktop falando com o nosso servidor. Olhem três coisas: o rótulo da ferramenta que ele chama, o que o pedido teve de informar e o que aparece na tela no fim.”
+*Durante:* o vídeo é mudo — narre por cima em duas frases: “aqui ele está escolhendo a ferramenta sozinho, é a nossa: Pethouse, listar todos os pets” (aos ~0:40) e “para cadastrar, o pedido levou `ownerId: 1`” (aos ~0:25).
+*Depois (20 s):* “Três coisas para levar daqui. Um: quem respondeu foi o nosso servidor — o rótulo na tela é a nossa ferramenta. Dois: para cadastrar, **a identidade foi digitada no chat** — `ownerId: 1` — e o agente confirmou ‘Dono: ID 1 (Eduardo Sereia)’. Ninguém estava logado. Três: na listagem seguinte o payload cru subiu na tela com nome, e-mail, telefone e endereço do dono.
+O agente não é o vilão: ele usou o que estava exposto. É o que vem agora.” *(passa para P3)*
 
 ---
 
@@ -157,7 +157,8 @@ E é isso; ficamos à disposição para as perguntas.”
 - [ ] rodar o deck inteiro uma vez com cronômetro: alvo 12–14 min; se passar de 15, corte o slide 4 (Inventário) para 50 s falando só os baldes.
 - [ ] cada pessoa ensaia a sua primeira e a sua última frase sem olhar.
 - [ ] combinar quem controla a passagem de slide (uma pessoa só, sentada no notebook) e usar a mesma frase de deixa.
-- [ ] o vídeo da demo abre no notebook da apresentação **sem depender da internet da sala** (baixe o arquivo) e o áudio funciona; ensaie o play em tela cheia.
+- [ ] o vídeo da demo abre no notebook da apresentação **sem depender da internet da sala** (baixe o arquivo); ele é mudo, então ensaie a narração por cima e teste o volume da sala.
+- [ ] decidir sobre os dados pessoais que aparecem no vídeo entre 0:47 e 0:52 (nome, e-mail, telefone, endereço do dono): manter como evidência ou tarjar antes de projetar.
 - [ ] depois de gravar: apagar o anúncio criado na demo e parar os containers (`docker stop petapi petpg`).
 - [ ] **não falar**: dados reais do seed (nomes, e-mails, telefones), valores de commit de outro repositório, nem “o agente errou” — o defeito é do adaptador, não do modelo.
 - [ ] números citados sempre com a mesma fonte da apresentação: 12 ferramentas, 6 que não entregam, 231 testes, 110 commits, 6 posts e 5 usuários no banco de teste.

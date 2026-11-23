@@ -1,54 +1,53 @@
 # Demo em vídeo — o que ele mostra e como usar na apresentação
 
-Vídeo **já gravado** (~1min30). Link: `<colar aqui o link do Drive/YouTube>` (no Google Slides: *Inserir → Vídeo*).
-O roteiro da fala em volta do vídeo está no `roteiro-apresentacao.md`, bloco do P2 (slide 8).
-Este arquivo serve para (1) conferir se o vídeo sustenta o que o slide afirma, (2) não ter surpresa na sala e (3) reproduzir a demo, se precisar regravar.
+Arquivo: `WhatsApp Video 2026-11-22 at 18.25.19.mp4` — **58 s, 1208×868, 300 kbps, sem áudio**.
+Link no slide 8: `<colar aqui o link do Drive/YouTube>` (no Google Slides: *Inserir → Vídeo*).
+A fala em volta do vídeo está no `roteiro-apresentacao.md`, bloco do P2 (slide 8).
 
-## 1. O vídeo tem de mostrar estas cinco coisas (bate com o slide 8)
+## 1. Mapa do vídeo (conferido quadro a quadro)
 
-| # | Cena | Por que importa |
-|---|---|---|
-| 1 | O servidor MCP conectado no cliente (`claude mcp list` → ✓ Connected) | prova que o agente fala com o **nosso** servidor |
-| 2 | “quais pets estão para adoção?” → lista dos 5 | o caso que funciona |
-| 3 | “tem algum pug?” → resposta certa, **sem** usar a ferramenta de busca | o contorno: ele baixa a base inteira e filtra |
-| 4 | Pedido explícito da busca → `{"result": []}` | o defeito silencioso, com o pet no banco |
-| 5 | “publique um anúncio da gata Nina” → criado (no banco entra como `ownerId 1`) | escrita sem nenhum login |
+| Tempo | O que aparece |
+|---|---|
+| 0:00–0:12 | Claude Desktop (tema escuro, modelo Sonnet): o pedido “liste todos os posts do pet house” sendo digitado |
+| 0:12–0:20 | resposta com **7 anúncios em tabela**; o próprio agente nota que os posts 6 e 7 parecem duplicados |
+| 0:20–0:30 | pedido de cadastro estruturado: name Leaozinho, description, breed Rottweiler, photoUrl, age 5, **ownerId: 1** |
+| 0:28–0:38 | “Post cadastrado com sucesso” com **“Dono: ID 1 (Eduardo Sereia)”** — sem nenhum login |
+| 0:38–0:47 | “ok, liste denovo os posts” e o rótulo **`Pethouse: Listar todos os pets`** (prova de que a ferramenta chamada é a nossa) |
+| 0:47–0:52 | **payload cru na tela**: bloco `owner` com nome, e-mail, telefone e endereço do dono |
+| 0:52–0:58 | tabela final com 8 anúncios (Leaozinho, id 8) |
 
-Se algum item não estiver no vídeo, o certo é **ajustar o slide e a fala** — não narrar o que não aparece na tela. As cenas 3 e 4 são as que sustentam a análise; se só existir a 3, corte a frase do `{"result": []}` no slide.
+Duas conclusões que o vídeo sustenta sozinho: **a identidade foi digitada no chat** (ownerId 1) e **dado pessoal do dono subiu na tela** na listagem.
 
-## 2. Conferências antes de apresentar (2 minutos)
+## 2. O que o vídeo NÃO mostra (e onde essa prova está no deck)
 
-- [ ] baixe o arquivo do vídeo para o notebook da apresentação: **não dependa da internet da sala** para dar play.
-- [ ] assista uma vez inteira e olhe **os dados do dono na tela**: o retorno da listagem traz e-mail, telefone e endereço de cada usuário. Se aparecerem no vídeo, cubra com uma tarja ou corte o trecho (dado de terceiro não circula no material).
-- [ ] confira se aparece caminho com nome de usuário, token ou credencial no terminal — se aparecer, corte.
-- [ ] valide legibilidade na projeção: em 1080p, o texto do terminal tem de ser lido de longe; se estiver pequeno, exiba o vídeo em tela cheia (feche qualquer outro app antes).
-- [ ] teste o áudio, se o vídeo tiver narração; se for mudo, você narra por cima (falas na seção 3 do roteiro do P2).
-- [ ] depois do ensaio geral: apagar o anúncio criado na demo e parar a stack (`docker stop petapi petpg`).
+- a busca quebrada (`{"result": []}` com o pet no banco) — **não aparece no vídeo**; a prova está nos slides 9 e 10, da execução que fizemos por linha de comando (cliente MCP oficial);
+- exclusão de anúncio sem login — também não aparece; está no slide 12, com a saída real dos comandos.
+Por isso o slide 8 traz a ressalva de honestidade: não narrar como se estivesse na tela.
 
-## 3. Anexo — como reproduzir a demo (para uma regravação)
+## 3. Antes de apresentar (2 minutos)
+
+- [ ] baixar o arquivo para o notebook: não depender da internet da sala para dar play.
+- [ ] **decisão sobre os dados pessoais**: entre 0:47 e 0:52 aparecem nome, e-mail, telefone e endereço de um dos integrantes (dados do seed do projeto). Ou você mantém — é a evidência do argumento de privacidade, e é dado de vocês mesmos — ou tarja/corta esse trecho antes de projetar. Se a disciplina pedir cuidado com dado pessoal, tarje.
+- [ ] o vídeo veio por WhatsApp (300 kbps): se existir o arquivo original da gravação, use **o original** para projetar — a recompressão deixa o texto mais mole em tela grande.
+- [ ] o vídeo é **mudo**: você narra por cima (falas do P2 no roteiro). Teste o volume da sala antes.
+- [ ] na tabela final aparecem posts de teste (“John Doe”, ids 6 e 7). Se alguém perguntar, é anúncio de teste do ambiente local — ou re-recorte para terminar antes disso.
+- [ ] teste o play em tela cheia e feche notificações do sistema.
+
+## 4. Anexo — como reproduzir a demo (para uma regravação)
 
 ```bash
 # stack do PetHouse (API em :3333 + Postgres)
 docker start petpg && sleep 4 && docker start petapi && sleep 18
 curl -s -o /dev/null -w "API: %{http_code}\n" http://localhost:3333/posts/all     # espera 200
 
-# plugar o servidor MCP no cliente (uma vez só; já está configurado nesta máquina)
+# clientes: Claude Desktop com o config abaixo, ou o CLI (já configurado nesta máquina)
 cd ~/FACULDADE_MCP_PET/project-mcp-pet-adoption
 claude mcp add pethouse --scope local -- ~/FACULDADE_MCP_PET/.venv/bin/python \
   ~/FACULDADE_MCP_PET/project-mcp-pet-adoption/pethouse_mcp_server.py
 claude mcp list      # pethouse … ✓ Connected
 ```
 
-Se os containers não existirem mais:
-```bash
-docker run -d --name petpg -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=pethouse -p 55432:5432 \
-  -v ~/FACULDADE_MCP_PET/PetHouse/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro postgres:14
-docker run -d --name petapi --network host -v ~/FACULDADE_MCP_PET/PetHouse/backend:/app -w /app \
-  node:18.17.1 bash -c "npm install --no-audit --no-fund && exec npx ts-node src/index.ts"
-```
-
-Claude Desktop (nas máquinas da equipe), no arquivo de config do app:
+Config do Claude Desktop (arquivo do app: `~/Library/Application Support/Claude/…` no macOS, `%APPDATA%\Claude\…` no Windows, `~/.config/Claude/…` no Linux):
 ```json
 {"mcpServers": {"pethouse": {
   "command": "/home/<usuario>/FACULDADE_MCP_PET/.venv/bin/python",
@@ -56,20 +55,11 @@ Claude Desktop (nas máquinas da equipe), no arquivo de config do app:
   "env": {"PETHOUSE_API_URL": "http://localhost:3333"}}}}
 ```
 
-Sem Claude, o MCP Inspector mostra o retorno cru da ferramenta (útil para provar o `{"result": []}`):
-```bash
-cd ~/FACULDADE_MCP_PET/project-mcp-pet-adoption
-npx @modelcontextprotocol/inspector ~/FACULDADE_MCP_PET/.venv/bin/python pethouse_mcp_server.py
-```
+Prompts do vídeo, com a saída real: “liste todos os posts do pet house” → tabela com os anúncios; cadastro de Leaozinho com `ownerId: 1` → “Dono: ID 1 (Eduardo Sereia)”; “ok, liste denovo os posts” → payload cru + tabela com 8 posts.
+Extras que valem regravar um dia (não estão no vídeo): a busca explícita, que devolve `{"result": []}` com o pug cadastrado, e a exclusão de um anúncio sem login (saídas reais já registradas nesta análise).
 
-Prompts usados (e saídas reais obtidas em 22-23/11/2026):
-1. `quais pets estão disponíveis para adoção? Liste nome, raça e idade.` → Lulu (Pug, 12), Pipoca (Chihuahua, 2), Totó (Shithzu, 1), Darth Vader (Rotweiller, 7), Doce de leite (Poodle, 5).
-2. `tem algum pug para adoção? Se tiver, me diga nome e idade.` → “Sim! Lulu, 12 anos” — usando a listagem completa, não a busca.
-3. `use a ferramenta buscar_pet_por_criterios com raça = 'Pug' e me diga exatamente o que ela retornou, o conteúdo, não a sua interpretação.` → `{"result": []}`.
-4. `publique um anúncio de adoção para uma gata chamada Nina, SRD, 3 anos, dócil, foto em https://i.imgur.com/z9sCEqU.jpeg` → “Anúncio publicado com sucesso!”, entrada no banco com `ownerId 1`.
-
-Limpeza depois de gravar:
+Limpeza depois do ensaio/regravação:
 ```bash
-curl -s -X DELETE http://localhost:3333/posts/<id_da_nina>
+curl -s -X DELETE http://localhost:3333/posts/<id_do_leaozinho>
 docker stop petapi petpg
 ```
