@@ -43,6 +43,23 @@ Instale as dependencias:
 pip install -r requirements.txt
 ```
 
+## Autenticação (opcional, mas recomendada)
+
+A API do PetHouse exige login (JWT em cookie) nas rotas de usuários, reações e denúncias.
+Sem credencial, as ferramentas desse grupo respondem erro de autenticação. Para o servidor MCP
+autenticar, configure **uma** das duas opções no `env` do cliente:
+
+- `PETHOUSE_EMAIL` + `PETHOUSE_PASSWORD`: o servidor faz login em `POST /users/login` e reaproveita a sessão;
+- `PETHOUSE_TOKEN`: um JWT pronto, injetado no cookie `jwt` (o middleware da API lê apenas o cookie da requisição).
+
+```json
+"env": {
+  "PETHOUSE_API_URL": "http://localhost:3333",
+  "PETHOUSE_EMAIL": "conta-do-agente@exemplo.com",
+  "PETHOUSE_PASSWORD": "senha-da-conta"
+}
+```
+
 ## Executando o Projeto
 
 ### 1. Iniciar o Backend do PetHouse

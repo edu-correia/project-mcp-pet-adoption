@@ -16,22 +16,44 @@ except (ImportError, ModuleNotFoundError):
 # URL base real da API PetHouse conforme documentação do Swagger
 API_BASE_URL = os.getenv("PETHOUSE_API_URL", "http://localhost:3333").rstrip("/")
 
+# Identidade do servidor MCP: a API autentica por JWT no cookie "jwt", então o
+# cliente faz login uma vez e reaproveita essa sessão nas chamadas seguintes.
+API_EMAIL = os.getenv("PETHOUSE_EMAIL")
+API_PASSWORD = os.getenv("PETHOUSE_PASSWORD")
+API_TOKEN = os.getenv("PETHOUSE_TOKEN")
+_cliente: Optional[httpx.AsyncClient] = None
+
+
+async def _obter_cliente() -> httpx.AsyncClient:
+  """Cliente HTTP único, com sessão autenticada quando há credencial configurada."""
+  global _cliente
+  if _cliente is None:
+    _cliente = httpx.AsyncClient(timeout=10.0)
+    if API_TOKEN:
+      _cliente.cookies.set("jwt", API_TOKEN)
+    elif API_EMAIL and API_PASSWORD:
+      await _cliente.post(
+          f"{API_BASE_URL}/users/login",
+          json={"email": API_EMAIL, "password": API_PASSWORD},
+      )
+  return _cliente
+
 
 async def _fazer_requisicao(
     metodo: str, endpoint: str, **kwargs
 ) -> Dict[str, Any] | List[Any]:
-  """Função auxiliar para executar requisições HTTP seguras à API do PetHouse."""
+  """Função auxiliar para executar requisições HTTP à API do PetHouse."""
   url = f"{API_BASE_URL}{endpoint}"
   try:
-    async with httpx.AsyncClient(timeout=10.0) as client:
-      response = await client.request(metodo, url, **kwargs)
-      response.raise_for_status()
+    client = await _obter_cliente()
+    response = await client.request(metodo, url, **kwargs)
+    response.raise_for_status()
 
-      # Se a resposta for vazia (ex: status 204 ou DELETE)
-      if not response.content:
-        return {"sucesso": True, "status_code": response.status_code}
+    # Se a resposta for vazia (ex: status 204 ou DELETE)
+    if not response.content:
+      return {"sucesso": True, "status_code": response.status_code}
 
-      return response.json()
+    return response.json()
   except httpx.HTTPStatusError as e:
     return {
         "erro": True,
