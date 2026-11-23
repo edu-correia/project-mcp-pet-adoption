@@ -24,6 +24,11 @@ API_TOKEN = os.getenv("PETHOUSE_TOKEN")
 _cliente: Optional[httpx.AsyncClient] = None
 
 
+def _corpo(resposta: Any) -> Any:
+  """A API devolve {"message": ..., "body": ...}; o dado util esta no corpo."""
+  return resposta.get("body") if isinstance(resposta, dict) else resposta
+
+
 async def _obter_cliente() -> httpx.AsyncClient:
   """Cliente HTTP único, com sessão autenticada quando há credencial configurada."""
   global _cliente
@@ -82,9 +87,11 @@ async def obter_estatisticas_gerais() -> str:
   users = await _fazer_requisicao("GET", "/users/all")
   complaints = await _fazer_requisicao("GET", "/complaints/all")
 
-  total_posts = len(posts) if isinstance(posts, list) else 0
-  total_users = len(users) if isinstance(users, list) else 0
-  total_complaints = len(complaints) if isinstance(complaints, list) else 0
+  total_posts = len(_corpo(posts) or []) if isinstance(_corpo(posts), list) else 0
+  total_users = len(_corpo(users) or []) if isinstance(_corpo(users), list) else 0
+  total_complaints = (
+      len(_corpo(complaints) or []) if isinstance(_corpo(complaints), list) else 0
+  )
 
   return (
       f"Estatísticas PetHouse:\n"
@@ -98,6 +105,7 @@ async def obter_estatisticas_gerais() -> str:
 async def listar_racas_disponiveis() -> str:
   """Lista todas as raças distintas de pets atualmente publicadas."""
   posts = await _fazer_requisicao("GET", "/posts/all")
+  posts = _corpo(posts)
   if not isinstance(posts, list):
     return "Nenhum pet encontrado."
 
@@ -135,6 +143,7 @@ async def buscar_pet_por_criterios(
   if isinstance(posts, dict) and posts.get("erro"):
     return posts
 
+  posts = _corpo(posts)
   if not isinstance(posts, list):
     return []
 
