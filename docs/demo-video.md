@@ -1,7 +1,5 @@
 # Demo em vídeo — o que ele mostra e como usar na apresentação
 
-Contexto: o vídeo é da **versão anterior** do servidor (antes do fix). As duas cenas que ele mostra continuam verdadeiras na versão atual.
-
 Arquivo: `WhatsApp Video 2026-11-22 at 18.25.19.mp4` — **58 s, 1208×868, 300 kbps, sem áudio**.
 Link no slide 9: `<colar aqui o link do Drive/YouTube>` (no Google Slides: *Inserir → Vídeo*).
 A fala em volta do vídeo está no `roteiro-apresentacao.md`, bloco do P2 (slide 9).
@@ -22,10 +20,10 @@ Duas conclusões que o vídeo sustenta sozinho: **a identidade foi digitada no c
 
 ## 2. O que o vídeo NÃO mostra (e onde essa prova está no deck)
 
-- a busca corrigida (`{"result": []}` → acha o pet) — **não aparece no vídeo**; a prova está no slide 8, com as duas saídas reais (antes e depois) da execução por linha de comando;
+- o comportamento da busca por raça e por idade — **não aparece no vídeo**; a saída real está no slide 7;
 - exclusão de anúncio sem dono verificado — também não aparece; está no slide 13, com a saída real dos comandos;
 - e a bateria de validação do fix (quatro cenários) está no slide 6.
-Por isso o slide 9 diz explicitamente que o vídeo é da versão anterior e que só as duas coisas que ele mostra — o `ownerId` digitado no chat e o payload com os dados do dono — continuam valendo.
+Por isso o roteiro do slide 9 não narra como se estivesse na tela o que o vídeo não mostra: só o rótulo da ferramenta, o `ownerId` digitado no chat e o payload com os dados do dono.
 
 ## 3. Antes de apresentar (2 minutos)
 
