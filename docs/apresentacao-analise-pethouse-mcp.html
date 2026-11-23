@@ -205,14 +205,28 @@
       <h2><span class="kick">Caso de uso destaque</span>“Ache um pet para eu adotar”</h2>
       <div class="grid g2">
         <div class="card" style="margin:0"><span class="tag ok">O que deveria acontecer</span><small>Usuário pergunta por um pug dócil; o agente chama <code>buscar_pet_por_criterios(raca="Pug")</code>, recebe o anúncio da Lulu (pug, 12 anos, “só dorme”) e responde com nome, idade e descrição.</small></div>
-        <div class="card" style="margin:0"><span class="tag bad">O que aconteceu</span><small>Lista vazia — com o pug cadastrado no banco — e a resposta “não encontrei nenhum pug disponível”. Falha silenciosa é pior que erro: é convicção errada entregue ao usuário.</small></div>
+        <div class="card" style="margin:0"><span class="tag bad">O que aconteceu</span><small>A ferramenta devolve <code>{"result": []}</code> com o pug cadastrado — sem erro, sem aviso. Na gravação da demo deste trabalho apareceu o detalhe que faltava: o agente costuma <strong>contornar</strong> a ferramenta quebrada, chamando a listagem completa e filtrando por conta própria. Ele acerta a resposta, mas baixando a base inteira — com os dados do dono de cada anúncio — para o contexto.</small></div>
       </div>
       <pre><code><span class="c"># execução real</span>
 buscar_pet_por_criterios {"raca":"Pug"}          → (vazio)
 buscar_pet_por_criterios {"termo_busca":"dorme"} → (vazio)
 <span class="c"># o mesmo dado vem íntegro pela outra tool:</span>
 listar_todos_os_pets → id 5, "Lulu", breed "Pug", age 12, "Só dorme", ownerId 1</code></pre>
-      <p><small>Impacto: o caso de uso que dá sentido ao projeto é exatamente o que não funciona — e o usuário não descobre que é falha técnica, acha que não existe o pet.</small></p>
+      <p><small>Impacto: com 5 anúncios o defeito é invisível — o agente contorna e acerta. Na base real o custo aparece: para responder “tem pug?” o agente precisa puxar tudo, incluindo os dados pessoais de cada dono. E se ele escolher a ferramenta certa, a resposta é vazia.</small></p>
+    </section>
+
+    <section class="slide" data-title="Demo">
+      <h2><span class="kick">Demo</span>O agente em ação: Claude chamando o MCP</h2>
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:14px">Vídeo de ~1min30, gravado com o cliente oficial (<code>claude</code>) falando com o servidor por stdio e a API PetHouse rodando em <code>localhost:3333</code>. Antes do vídeo: <strong>“olhem três coisas — qual ferramenta o agente escolheu, o que ela devolveu e o que entrou no contexto dele”</strong>.</p>
+      <div class="grid g2">
+        <div class="card" style="margin:0"><span class="tag ok">O que funciona (e o que isso revela)</span><small>1. “quais pets estão para adoção?” → o agente lista os 5 pets. <br>2. “tem algum pug?” → ele responde certo, <strong>mas não pela ferramenta de busca</strong>: ele baixou a base inteira e filtrou sozinho.</small></div>
+        <div class="card" style="margin:0"><span class="tag bad">O defeito, mostrado ao vivo</span><small>3. Pedindo a ferramenta de busca explicitamente: <code>{"result": []}</code> — com o pug no banco. <br>4. “publique um anúncio da gata Nina”: criado em nome do usuário 1, <strong>sem nenhum login</strong>.</small></div>
+      </div>
+      <pre><code><span class="c"># o que aparece na tela durante o vídeo</span>
+listar_todos_os_pets            → 5 pets (com e-mail, telefone e endereço de cada dono no payload)
+buscar_pet_por_criterios Pug    → {"result": []}          <span class="c"># o pug existe</span>
+cadastrar_pet_para_adocao       → Nina criada, ownerId 1   <span class="c"># ninguém logado</span></code></pre>
+      <p><small>Depois do vídeo, uma frase de ligação: “o agente não é o vilão — ele usou o que estava exposto. O defeito é do adaptador, e é o que vem agora.”</small></p>
     </section>
 
     <section class="slide" data-title="Insucesso 1: contrato da API">

@@ -1,6 +1,6 @@
 # Roteiro de apresentação — PetHouse MCP Server (análise de manutenção e evolução)
 
-15 slides, 4 apresentadores, alvo de **12 a 14 minutos** + perguntas. Cada pessoa fala ~3 minutos.
+16 slides, 4 apresentadores, alvo de **13 a 15 minutos** + perguntas — dos quais 1min30 é o vídeo da demo. Cada pessoa fala ~3 minutos.
 O roteiro está escrito para ser falado (não lido): decore a primeira e a última frase de cada bloco e improvise o meio olhando o slide.
 
 ## Divisão
@@ -8,9 +8,9 @@ O roteiro está escrito para ser falado (não lido): decore a primeira e a últi
 | Quem | Slides | Tempo | Papel |
 |---|---|---|---|
 | **P1** | 1 a 4 | ~3 min | abre, situa o produto e mostra o inventário (o problema) |
-| **P2** | 5 a 7 | ~2min30 | como verificamos e o que a solução deveria entregar |
-| **P3** | 8 a 11 | ~3 min | os insucessos técnicos: contrato, falha silenciosa, identidade, segurança |
-| **P4** | 12 a 15 | ~3 min | segurança no contexto do modelo, manutenção, roadmap e fechamento |
+| **P2** | 5 a 8 | ~4 min | como verificamos, o que a solução deveria entregar e **a demo em vídeo** |
+| **P3** | 9 a 12 | ~3 min | os insucessos técnicos: contrato, falha silenciosa, identidade, segurança |
+| **P4** | 13 a 16 | ~3 min | segurança no contexto do modelo, manutenção, roadmap e fechamento |
 
 Sugestão de nomes (trocar à vontade): P1 Theo, P2 Mateus, P3 Eduardo, P4 Bernardo.
 Eduardo escreveu o servidor MCP — deixá-lo no bloco 8–11 ajuda nas perguntas técnicas.
@@ -18,7 +18,7 @@ Eduardo escreveu o servidor MCP — deixá-lo no bloco 8–11 ajuda nas pergunta
 ## Combinado de passagem (use sempre a mesma frase)
 
 - P1 → P2: “e foi assim que a gente foi verificar isso na prática.”
-- P2 → P3: “o caso de uso que mais importa é justamente onde a coisa quebra, e é o que vem agora.”
+- P2 → P3 (depois do vídeo): “o agente não é o vilão — ele usou o que estava exposto. O defeito é do adaptador, e é o que vem agora.”
 - P3 → P4: “tudo isso tem uma camada a mais, que é o que entra no contexto do modelo.”
 - P4 (fechamento) → grupo: “e é isso; ficamos à disposição para as perguntas.”
 
@@ -50,7 +50,7 @@ E foi assim que a gente foi verificar isso na prática.” *(passa para P2)*
 
 ---
 
-## P2 — slides 5 a 7 (~2 min 30)
+## P2 — slides 5 a 8 (inclui a demo em vídeo) (~4 min)
 
 **Slide 5 · Método (40 s)**
 “Antes de acusar o código, a gente precisa mostrar como mediu. Leu os dois repositórios no commit 90b6e86, e leu o que a API realmente faz — rotas, middlewares, repositórios e casos de uso — porque o que a documentação promete não é o que a API devolve.
@@ -66,12 +66,21 @@ E tem um ganho de engenharia que vale para os quatro: como o adaptador é fino, 
 
 **Slide 7 · Caso de uso destaque (45 s)**
 “Vamos pegar o caso que mais importa. Deveria ser assim: a pessoa pergunta por um pug dócil, o agente chama a busca com raça igual a Pug, recebe o anúncio da Lulu — pug, doze anos, ‘só dorme’ — e responde com nome, idade e descrição.
-O que aconteceu: lista vazia. Nas três tentativas — por raça, por palavra da descrição e por idade. Só que o dado existe: a outra ferramenta devolve o mesmo anúncio, com id, raça, idade e descrição.
-E o problema não é só técnico: o usuário não recebe um erro, ele recebe a resposta ‘não encontrei nenhum pug’. Ou seja, a falha vira convicção errada. O caso de uso que mais importa é justamente onde a coisa quebra, e é o que vem agora.” *(passa para P3)*
+O que aconteceu: a ferramenta devolve lista vazia — nas três tentativas, por raça, por descrição e por idade. E aqui está o achado que só apareceu quando a gente foi gravar a demo: o agente costuma **contornar** a ferramenta quebrada. Ele chama a listagem completa, filtra por conta própria e acerta a resposta.
+O problema é o preço: para responder ‘tem pug?’ ele joga a base inteira no contexto dele, com os dados do dono de cada anúncio. Ou seja, o defeito é invisível com cinco anúncios e vira custo, privacidade e escala quando a base cresce — e se o agente escolher a ferramenta certa, a resposta é vazia.
+É isso que a gente vai mostrar agora, no vídeo.”
 
 ---
 
-## P3 — slides 8 a 11 (~3 min)
+**Slide 8 · Demo em vídeo (1min30)**
+*Antes de dar play (15 s):* “Vou mostrar isso acontecendo. Olhem três coisas no vídeo: qual ferramenta o agente escolhe, o que ela devolveu e o que entrou no contexto dele.”
+*Durante:* deixe o vídeo rodar sem falar por cima — 1min30 é curto e a atenção tem que ir para a tela. Se a sala for grande, narre as frases que estão no roteiro do vídeo (`DEMO_VIDEO.md`, seção 3).
+*Depois (15 s):* “Três coisas para levar daqui. Um: o agente está plugado no nosso servidor. Dois: ele acertou o pug **sem usar a ferramenta de busca** — baixou a base inteira e filtrou sozinho. Três: ele publicou um anúncio sem ninguém estar logado; o anúncio entrou no sistema como do usuário 1.
+O agente não é o vilão: ele usou o que estava exposto. O defeito é do adaptador, e é o que vem agora.” *(passa para P3)*
+
+---
+
+## P3 — slides 9 a 12 (~3 min)
 
 **Slide 8 · Insucesso 1: contrato (55 s)**
 “O primeiro insucesso tem uma causa só, e ela se repete: o adaptador não conhece o contrato da API. A tela documenta uma coisa, a API faz outra.
@@ -101,7 +110,7 @@ Fica a formulação que a gente leva: em um agente, ‘destrutivo’ não é o v
 
 ---
 
-## P4 — slides 12 a 15 (~3 min)
+## P4 — slides 13 a 16 (~3 min)
 
 **Slide 12 · Segurança: o que vaza para o modelo (55 s)**
 “Esse slide é sobre o que muda quando o consumidor é um modelo de linguagem.
@@ -138,6 +147,7 @@ E é isso; ficamos à disposição para as perguntas.”
 | “Se vocês sabem o que está errado, por que não corrigiram?” | P3 | O trabalho da disciplina é análise; o roadmap mostra o caminho, e o fix mais barato é justamente o P1: teste de contrato. |
 | “O MCP é inseguro por natureza?” | P4 | Não. MCP é transporte. O que falta é política no adaptador: identidade, confirmação e minimização de dado. |
 | “Isso é defeito do backend ou do servidor MCP?” | P3 | Dos dois: a API tem rotas públicas sem dono (herdado do projeto original) e o MCP não autentica nem confirma (defeito novo). |
+| “No vídeo o Claude acertou o pug — então a busca funciona?” | P2 | Não: ele acertou **contornando**, baixando a lista completa e filtrando. Chamando a ferramenta de busca, a resposta é `{"result": []}` — está no próprio vídeo. |
 | “Como ficaria a confirmação humana na prática?” | P1 ou P4 | Ferramenta destrutiva em duas etapas: o agente propõe, o cliente mostra e só executa com aprovação explícita. Leitura e ação em ferramentas separadas. |
 | “E a LGPD?” | P4 | Dado pessoal no prompt é tratamento de dado: minimizar campos na origem, mandar só o necessário e nunca credencial. |
 | “Quanto tempo para corrigir?” | P2 | Estimativa: P0 em um a dois dias, P1 em cerca de uma semana com os testes de contrato — é estimativa, não medição. |
@@ -147,5 +157,7 @@ E é isso; ficamos à disposição para as perguntas.”
 - [ ] rodar o deck inteiro uma vez com cronômetro: alvo 12–14 min; se passar de 15, corte o slide 4 (Inventário) para 50 s falando só os baldes.
 - [ ] cada pessoa ensaia a sua primeira e a sua última frase sem olhar.
 - [ ] combinar quem controla a passagem de slide (uma pessoa só, sentada no notebook) e usar a mesma frase de deixa.
+- [ ] o vídeo da demo abre no notebook da apresentação **sem depender da internet da sala** (baixe o arquivo) e o áudio funciona; ensaie o play em tela cheia.
+- [ ] depois de gravar: apagar o anúncio criado na demo e parar os containers (`docker stop petapi petpg`).
 - [ ] **não falar**: dados reais do seed (nomes, e-mails, telefones), valores de commit de outro repositório, nem “o agente errou” — o defeito é do adaptador, não do modelo.
 - [ ] números citados sempre com a mesma fonte da apresentação: 12 ferramentas, 6 que não entregam, 231 testes, 110 commits, 6 posts e 5 usuários no banco de teste.
